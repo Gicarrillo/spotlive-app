@@ -1,15 +1,24 @@
 // Importamos todos los elementos y archivos a utilizar
+
+import { useParams } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
 import React, {useState, useEffect} from "react";
 import SearchBar from "../components/SearchBar";
 import TrackList from "../components/TrackList";
 import TrackDetails from "../components/TrackDetails";
 import { searchInstagramProfile } from '../services/instagramApi';
 
+
 // import RecomendationsList from "./components/RecommendationsList";
 // import HistoryPanel from "./components/HistoryPanel";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import app from "../firebaseConfig"
 
 import { searchItunes } from "../services/iTunesApi";
 import { searchDeezer } from "../services/deezerApi";
+import Mapa from "../components/mapa";
+import { field } from "firebase/firestore/pipelines";
+import Navbar from "./Navbar";
 // Importamos estilos
 // import "./App.css"
 // Recibimos lo que devuelve la API de iTunes
@@ -42,6 +51,9 @@ function normalizeDeezerTrack(t) {
 }
 // Declaramos y exportamos la Aplicación para su ejecución
 export default function Evento() {
+  const { id } = useParams();
+  const db = getFirestore(app);
+  const [datosevento, setDatoseventos] = useState(null);
   const [username, setUsername] = useState("");
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState("");
@@ -66,8 +78,7 @@ export default function Evento() {
   const[result, setResult] = useState(false);
   // Estado para el mensaje de cargando con tiempo
   const [tiempo, setTiempo] = useState(false);
-  // Para filtrar resultados
-  // const [filtra, setFiltra] = useState("all");
+
 // Filtrar para ordenar alfabeticamente
   const[orden, setOrden] = useState("none");
   // Filtrar por fuente
@@ -75,6 +86,7 @@ export default function Evento() {
   // Para ordenar segun el artista
   const[artista, setArtista] = useState("all");
 
+  // const db =getFirestore(app);
   // Para guardar el historial
   // Cada que cambie history se guarda uno nuevo
 //   useEffect(() => {
@@ -83,6 +95,30 @@ export default function Evento() {
 //     localStorage.setItem("history", JSON.stringify(history));
     // [history] para determinar que se ejecuta cuando cambia history
 //   }, [history]);
+useEffect(() => {
+  async function obtenerEvento() {
+    try{
+      const docRef = doc(db, "eventos", id);
+      const docSnap = await getDoc(docRef);
+
+      if(docSnap.exists()) {
+        const data = docSnap.data();
+
+        setDatoseventos(data);
+
+        if(data.artista) {
+          runSearch(data.artista);
+        }
+      }
+    } catch (error) {
+      console.error("Error al obtener evento", error);
+    }
+    
+  }
+  if(id){
+    obtenerEvento();
+  }
+}, [id, db]);
   // Paso C2: función principal de busqueda (llama a 2 APIs)
   async function runSearch(term) {
     setError("");
@@ -208,146 +244,154 @@ const tracksOrdenados = [...tracksFiltrados].sort((a, b) => {
 
   return(
     <>
-    <div style={{ padding: 40, fontFamily: "Arial" }}>
-      
-      <h2>Buscar artista en Instagram</h2>
+    <Navbar/>
+    <div className="main-container">
+      <div className="lado-izquierdo">
+          <div className="container">
+            <div style={{padding: 16, fontFamily: "Arial"}}>
+              <h1 style={{marginTop: 0}}>
+                Mini Streaming Dashboard
+              </h1>
+              <SearchBar onSearch={runSearch} loading={loading}/>
 
-       <input
-        value={username}
-        onChange={e => setUsername(e.target.value)}
-        placeholder="Ej: badbunnypr"
-        style={{ padding:10, marginRight:10 }}
-      />
+              <div>
+                {/* <HistoryPanel history={history} onPick={runSearch} onlimpiar={eliminarhistorial}/> */}
+                <div>
+                  {/* Si loaging es true muestra el mensaje de cargando */}
+                  {loading && (
+                    <div className="card card-cargando" style={{padding: 12, border: "1px solid #ddd", borderRadius: 10}}>
+                      Cargando...
+                      <div className="spinner" style={{padding: 12, margin: 10}}>
 
-      <button onClick={buscarPerfil}>Buscar</button>
-
-      {loading && <p>Cargando...</p>}
-      {error && <p style={{color:"red"}}>{error}</p>}
-
-      {profile && (
-        <div style={{ border:'1px solid #ccc', padding:20, marginTop:20, maxWidth:400 }}>
-          <img src={profile.profile_picture_url} width={80} style={{borderRadius:"50%"}} />
-          <h3>@{profile.username}</h3>
-          <p>{profile.name}</p>
-          <p>{profile.biography}</p>
-
-          <p>
-            <strong>{profile.followers_count}</strong> seguidores — 
-            <strong> {profile.follows_count}</strong> seguidos
-          </p>
-        </div>
-      )}
-    </div>
-    <div className="container">
-    <div style={{maxWidth:1000, margin: "0px auto", padding: 16, fontFamily: "Arial"}}>
-      <h1 style={{marginTop: 0}}>
-        Mini Streaming Dashboard
-      </h1>
-      <SearchBar onSearch={runSearch} loading={loading}/>
-
-      <div  style={{display: "grid", gridTemplateColumns: "320px 1fr", gap: 16}}>
-        {/* <HistoryPanel history={history} onPick={runSearch} onlimpiar={eliminarhistorial}/> */}
-        <div>
-          {/* Si loaging es true muestra el mensaje de cargando */}
-          {loading && (
-            <div className="card card-cargando" style={{padding: 12, border: "1px solid #ddd", borderRadius: 10}}>
-              Cargando...
-              <div className="spinner" style={{padding: 12, margin: 10}}>
-
+                      </div>
+                    </div>
+                  )}
+                  {/* Para mostrar mensaje si ha tardado mucho, valida que loading y tiempo esten en verdadero*/}
+                  {loading && tiempo && (
+                    <div className="card card-lento" style={{ margin: 20, padding:12, border: "1px solid #ddd", borderRadius: 10}}>
+                      La API está cargando los resultados, podría tardar un poco
+                    </div>
+                  )}
+                  {/* Si error es verdadero muestra mensaje de error */}
+                  {error &&(
+                    <div style={{padding: 12, border: "1px solid #ffb3b3", borderRadius: 10, background: "#f4c5"}}>
+                      <b>Error: </b> {error}
+                    </div>
+                  )}
+                  {/* Condicion para mostrar  mensaje sino se encuentran resultados */}
+                  {result && !loading && !error && tracks.length === 0 &&(
+                    <div className="card card-noresult" style={{padding:12, border: "1px solid #ddd", borderRadius: 10}}>
+                      No se encontraron resultados
+                    </div>
+                  ) }
+                  {/*Se modificaron los elementos de la conción ya que desde result
+                  se pued econsultar cuando ya se realizo una busqueda y cuando no  */}
+                  {!result && (
+                    <div className="card" style={{padding: 12, border: "1px solid #ddd", borderRadius: 10}}>
+                      Realiza una busqueda para ver canciones
+                      </div>
+                  )}
+                  {tracks.length > 0 && (
+                    <>
+                    <h3>Resultados {tracksFiltrados.length} (Cátalogo)</h3>
+                    {/* <TrackList items={tracks} onSelect={handleSelect}/>
+                    <TrackDetails track={selected}/>
+                    </> */}
+                    <div>
+                      {/* Lista desplegable para saber que filtro aplicar */}
+                      <select
+                        onChange={(e) => {
+                          // Modifica el valor de la fuente para que se cambie al que selecciono
+                            setFuente(e.target.value);
+                        }}
+                        className="selectionar btn-filtro"
+                        aria-label="Filtar resultados" style={{ padding: 8, borderRadius: 8, width: "25%" }}> 
+                        {/* Opciones que se muestra que puede seleccionar */}
+                        <option value="all">Todos</option>
+                        <option value="iTunes API">iTunes</option>
+                        <option value="Deezer API">Deezer</option>
+                      </select>
+                      {/* Lista desplegable para filtrar por los artistas que haya en el resultado */}
+                      {/* SetArtista toma el valor seleccionado */}
+                      <select className="btn-filtro" onChange={(e) => setArtista(e.target.value)}>
+                        {/* Mapea los artistas disponibles para que aparezcan en la lista */}
+                        <option value="all">Todos los artistas</option>
+                        {artistasDisponibles.map((a) => (
+                          // a=nombre del artista
+                          <option key={a} value={a}>{a}</option>
+                        ))}
+                      </select>
+                      {/* Lista desplegable para ordenar alfabeticamente de forma normal o inversa */}
+                      <select className="btn-filtro"
+                      // SetOrden toma el valor con el cual se va a ordenar
+                        onChange={(e) => setOrden(e.target.value)}
+                        style={{ padding: 8, borderRadius: 8, width: "25%", marginTop: 5 }}
+                      >
+                        {/* Opciones que tiene para ordenar los titulos */}
+                        <option value="none">Sin orden</option>
+                        <option value="az">Titulo A-Z</option>
+                        <option value="za">Titulo Z-A</option>
+                      </select>
+                      {/* Valida no haya tracks filtrados y muestra un mensaje que le avise al usuario */}
+                      {tracksFiltrados.length === 0 &&(
+                    <div className="card" style={{padding: 12, border: "1px solid #ddd", borderRadius: 10}}>
+                      No se obtuvieron resultados
+                    </div>
+                  )}
+                  </div>
+                  {/* Muestra los resultados de las listas filtradas */}
+                      <div className="card-lista">
+                        <TrackList items={tracksOrdenados} onSelect={handleSelect}/>
+                        <div>
+                          {/* Muestra solo el card si se ha seleccionado una canción */}
+                        {selected && (<TrackDetails track={selected} evento={datosevento}/>)}
+                      </div>
+                      </div>
+                      {/* Muestra las recomendaciones */}
+                      <div className="card-lista" style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 16 }}>
+                        {/* <RecomendationsList items={recs} onSelect={handleSelect}/>                   */}
+                      </div>
+                    </>
+                )}
+                  {/* <RecomendationsList items={recs} onSelect={handleSelect}/> */}
+                </div>
               </div>
             </div>
-          )}
-          {/* Para mostrar mensaje si ha tardado mucho, valida que loading y tiempo esten en verdadero*/}
-          {loading && tiempo && (
-            <div className="card card-lento" style={{ margin: 20, padding:12, border: "1px solid #ddd", borderRadius: 10}}>
-              La API está cargando los resultados, podría tardar un poco
-            </div>
-          )}
-          {/* Si error es verdadero muestra mensaje de error */}
-          {error &&(
-            <div style={{padding: 12, border: "1px solid #ffb3b3", borderRadius: 10, background: "#f4c5"}}>
-              <b>Error: </b> {error}
-            </div>
-          )}
-          {/* Condicion para mostrar  mensaje sino se encuentran resultados */}
-          {result && !loading && !error && tracks.length === 0 &&(
-            <div className="card card-noresult" style={{padding:12, border: "1px solid #ddd", borderRadius: 10}}>
-              No se encontraron resultados
-            </div>
-          ) }
-          {/*Se modificaron los elementos de la conción ya que desde result
-          se pued econsultar cuando ya se realizo una busqueda y cuando no  */}
-          {!result && (
-            <div className="card" style={{padding: 12, border: "1px solid #ddd", borderRadius: 10}}>
-              Realiza una busqueda para ver canciones
-              </div>
-          )}
-          {tracks.length > 0 && (
-            <>
-            <h3>Resultados {tracksFiltrados.length} (Cátalogo)</h3>
-            {/* <TrackList items={tracks} onSelect={handleSelect}/>
-            <TrackDetails track={selected}/>
-            </> */}
-            <div>
-              {/* Lista desplegable para saber que filtro aplicar */}
-              <select
-                onChange={(e) => {
-                  // Modifica el valor de la fuente para que se cambie al que selecciono
-                    setFuente(e.target.value);
-                }}
-                className="selectionar btn-filtro"
-                aria-label="Filtar resultados" style={{ padding: 8, borderRadius: 8, width: "25%" }}> 
-                {/* Opciones que se muestra que puede seleccionar */}
-                <option value="all">Todos</option>
-                <option value="iTunes API">iTunes</option>
-                <option value="Deezer API">Deezer</option>
-              </select>
-              {/* Lista desplegable para filtrar por los artistas que haya en el resultado */}
-              {/* SetArtista toma el valor seleccionado */}
-              <select className="btn-filtro" onChange={(e) => setArtista(e.target.value)}>
-                {/* Mapea los artistas disponibles para que aparezcan en la lista */}
-                <option value="all">Todos los artistas</option>
-                {artistasDisponibles.map((a) => (
-                  // a=nombre del artista
-                  <option key={a} value={a}>{a}</option>
-                ))}
-              </select>
-              {/* Lista desplegable para ordenar alfabeticamente de forma normal o inversa */}
-              <select className="btn-filtro"
-              // SetOrden toma el valor con el cual se va a ordenar
-                onChange={(e) => setOrden(e.target.value)}
-                style={{ padding: 8, borderRadius: 8, width: "25%", marginTop: 5 }}
-              >
-                {/* Opciones que tiene para ordenar los titulos */}
-                <option value="none">Sin orden</option>
-                <option value="az">Titulo A-Z</option>
-                <option value="za">Titulo Z-A</option>
-              </select>
-              {/* Valida no haya tracks filtrados y muestra un mensaje que le avise al usuario */}
-              {tracksFiltrados.length === 0 &&(
-            <div className="card" style={{padding: 12, border: "1px solid #ddd", borderRadius: 10}}>
-              No se obtuvieron resultados
-            </div>
-          )}
-            </div>
-            {/* Muestra los resultados de las listas filtradas */}
-                <div className="card-lista" style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 16 }}>
-                  <TrackList items={tracksOrdenados} onSelect={handleSelect}/>
-                  <div>
-                    {/* Muestra solo el card si se ha seleccionado una canción */}
-                  {selected && <TrackDetails track={selected}/>}
-                </div>
-                </div>
-                {/* Muestra las recomendaciones */}
-                <div className="card-lista" style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 16 }}>
-                  {/* <RecomendationsList items={recs} onSelect={handleSelect}/>                   */}
-                </div>
-              </>
-          )}
-          {/* <RecomendationsList items={recs} onSelect={handleSelect}/> */}
         </div>
       </div>
-    </div>
+      <div className="lado-derecho">
+        <div style={{ padding: 20}}>
+      
+          <h2>Buscar artista en Instagram</h2>
+
+          <input
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            placeholder="Ej: badbunnypr"
+            style={{ padding:10, marginRight:10 }}
+          />
+
+          <button onClick={buscarPerfil}>Buscar</button>
+
+          {loading && <p>Cargando...</p>}
+          {error && <p style={{color:"red"}}>{error}</p>}
+
+          {profile && (
+            <div style={{ border:'1px solid #ccc', padding:20, marginTop:20, maxWidth:400 }}>
+              <img src={profile.profile_picture_url} width={80} style={{borderRadius:"50%"}} />
+              <h3>@{profile.username}</h3>
+              <p>{profile.name}</p>
+              <p>{profile.biography}</p>
+
+              <p>
+                <strong>{profile.followers_count}</strong> seguidores — 
+                <strong> {profile.follows_count}</strong> seguidos
+              </p>
+            </div>
+          )}
+          </div>
+          <Mapa/>
+      </div>
   </div>
   </>
   );

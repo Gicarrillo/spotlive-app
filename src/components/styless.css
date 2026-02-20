@@ -1,0 +1,4 @@
+.leaflet-routing-container {
+    width: 250px !important; /* Reduce el ancho */
+    font-size: 12px !important; /* Reduce la fuente */
+}

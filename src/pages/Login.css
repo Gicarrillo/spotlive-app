@@ -7,10 +7,7 @@ input  {
 }
 
 .container {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
     background: #F2E2C4; 
 }
 .card {
@@ -112,4 +109,39 @@ form{
 h5 {
     margin: 0;
     font-weight: 500;
+}
+
+.main-container {
+  display: flex;
+  gap: 40px;
+  padding: 100px;
+  align-items: flex-start; /* importante */
+}
+
+.lado-izquierdo {
+  flex: 2;
+}
+
+.lado-derecho {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card-lista {
+  display: flex;
+  gap: 20px;
+}
+
+.card-lista > :first-child {
+  flex: 2;
+}
+
+.card-lista > :last-child {
+  flex: 1;
+}
+
+.lado-derecho {
+  max-width: 420px;
 }

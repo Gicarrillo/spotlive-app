@@ -1,5 +1,11 @@
 import React from "react";
-export default function TrackDetails({track}){
+// import { doc, getDoc } from "firebase/firestore";
+
+export default function TrackDetails({track, evento}){
+    // evento?.descripcion
+    // evento?.artista
+    // evento?.lugar
+    // evento?.fecha
     if(!track) return null;
     const colores = {
         "iTunes API":{
@@ -15,6 +21,18 @@ export default function TrackDetails({track}){
     }
     const estiloBoton = colores[track.source]||{background:"#b3b1b1", color:"white", border:"1px solid #5f5f5f"};
     return(
+        <>
+        <div>
+            <h3>{track.title}</h3>
+            <p><strong>Artista: </strong>{track.artist}</p>
+            {evento && (
+                <>
+                <hr/>
+                <p><strong>Evento: </strong> {evento.descripcion}</p>
+                <p><strong>Evento: </strong> {evento.lugar}</p>
+                </>
+            )}
+        </div>
         <div style={{padding:12,border:"1px solid #ddd",borderRadius:10,marginTop:16,background:"#6b792c", color:"white"}}>
             <h3 style={{marginTop:0}}>Detalle</h3>
             <div style={{display:"flex",gap:12}}>
@@ -39,5 +57,6 @@ export default function TrackDetails({track}){
                 <div style={{marginTop:12, opacity:0.7}}>No hay preview disponible para esta canción.</div>
             )}
         </div>
+        </>
     );
 }

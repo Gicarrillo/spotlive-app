@@ -1,5 +1,5 @@
 //Exportar función asíncrona (searchitunes), esta pemitirá ser utilizada desde otros archivos o componentes
-export async function searchItunes(term, limit=4) {
+export async function searchItunes(term, limit=2) {
     //construir url para consumir la api pública de iTunes
     // - term: termino de busqueda, se codifica para url
     // - media=music indica que se buscará de contenido musical

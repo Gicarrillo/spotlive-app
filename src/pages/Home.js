@@ -1,102 +1,39 @@
-// import React, { useState } from 'react';
-// import { searchInstagramProfile } from '../services/instagramApi';
-
-// function Home() {
-//   const [username, setUsername] = useState("");
-//   const [profile, setProfile] = useState(null);
-//   const [error, setError] = useState("");
-//   const [loading, setLoading] = useState(false);
-//   const eventos = [
-// //   {
-// //     id: 1,
-// //     nombre: "Festival Rock 2026",
-// //     lugar: "CDMX",
-// //     descripcion: "Gran festival de rock",
-// //     imagen: "/imagenes/rock.jpg",
-// //     mapa: "/imagenes/mapa1.png"
-// //   }
-// ];
-
-//   const buscarPerfil = async () => {
-//     if (!username) return;
-
-//     try {
-//       setLoading(true);
-//       setError("");
-//       setProfile(null);
-//       const data = await searchInstagramProfile(username);
-//       setProfile(data);
-//     } catch (err) {
-//       setError(err.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div style={{ padding: 40, fontFamily: "Arial" }}>
-      
-//       <h2>Buscar artista en Instagram</h2>
-
-//       <input
-//         value={username}
-//         onChange={e => setUsername(e.target.value)}
-//         placeholder="Ej: badbunnypr"
-//         style={{ padding:10, marginRight:10 }}
-//       />
-
-//       <button onClick={buscarPerfil}>Buscar</button>
-
-//       {loading && <p>Cargando...</p>}
-//       {error && <p style={{color:"red"}}>{error}</p>}
-
-//       {profile && (
-//         <div style={{ border:'1px solid #ccc', padding:20, marginTop:20, maxWidth:400 }}>
-//           <img src={profile.profile_picture_url} width={80} style={{borderRadius:"50%"}} />
-//           <h3>@{profile.username}</h3>
-//           <p>{profile.name}</p>
-//           <p>{profile.biography}</p>
-
-//           <p>
-//             <strong>{profile.followers_count}</strong> seguidores — 
-//             <strong> {profile.follows_count}</strong> seguidos
-//           </p>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default Home;
-
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Navbar from "./Navbar";
+import { useEffect, useState } from "react";
+import { getFirestore, collection, getDocs, } from "firebase/firestore";
+import app from "../firebaseConfig";
 
 function Home() {
   const navigate = useNavigate();
+  const [eventos, setEventos] = useState([]);
+  const db = getFirestore(app);
 
-  const eventos = [
-    {
-      id: 1,
-      nombre: "Festival Rock 2026",
-      lugar: "CDMX",
-      descripcion: "Gran festival de rock con bandas nacionales e internacionales.",
-      imagen: "/imagenes/rock.jpg",
-      mapa: "/imagenes/mapa1.png"
-    },
-    {
-      id: 2,
-      nombre: "Concierto Pop Night",
-      lugar: "Guadalajara",
-      descripcion: "Los mejores artistas pop del momento.",
-      imagen: "/imagenes/pop.jpg",
-      mapa: "/imagenes/mapa2.png"
+  // Cargar eventos de firestore
+  useEffect(() => {
+    async function obtenerEventos() {
+      try{
+        const eventoss =await getDocs(collection(db, "eventos"));
+
+        const listaEventos = eventoss.docs.map(doc =>({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setEventos(listaEventos);
+      }catch (error) {
+        console.error("Error al obtner los eventos", error)
+      }
     }
-  ];
+    obtenerEventos();
+  }, [db]);
+
 
   return (
-    <div style={{ padding: 40, fontFamily: "Arial" }}>
+    <>
+    <Navbar/>
+    <div style={{ padding: 100, fontFamily: "Arial" }}>
       <h2>Eventos Disponibles</h2>
 
       <div
@@ -137,6 +74,7 @@ function Home() {
         ))}
       </div>
     </div>
+    </>
   );
 }
 
