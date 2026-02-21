@@ -6,7 +6,7 @@ import Ruta from "./UbicacionEvento"
 import MapaBasico from "./MapaBasico";
 
 // Define el componente principal
-export default function Mapa() {
+export default function Mapa({evento}) {
 
   // Declara el estado vista y la función para intercambiarlo
   const [vista, setVista] = useState(false);
@@ -20,50 +20,84 @@ export default function Mapa() {
     backgroundColor: "#e2d4c8",
     borderColor: "#c3a87c",
     borderRadius:"10px",
-    padding: "10px",
-    fontsize: "20px",
+    // padding: "5px",
+    // fontsize: "10px",
   }
   // Boton resgresar estilos
-  const estilobotonr = {
-    color: "white",
-    borderRadius:"5px",
-    backgroundColor:"#ba290c",
-    padding: "5px",
-    fontsize: "15px",
-    borderColor: "#d96d6d",
-    margin: "10px 50px",
-  }
+const cerrar = {
+  position: "absolute",
+  top: 10,
+  right: 10,
+  backgroundColor: "#ba290c",
+  color: "white",
+  border: "none",
+  borderRadius: "6px",
+  padding: "6px 10px",
+  cursor: "pointer",
+  zIndex: 20000
+};
+
+  const modal= {
+  // padding: 10,
+  width: "80%",
+  height: "70%",
+  backgroundColor: "white",
+  borderRadius: "12px",
+  overflow: "hidden",
+  position: "relative"
+};
+
+const estilocard = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100vw",
+  height: "100vh",
+  backgroundColor: "rgba(0,0,0,0.5)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 9999
+};
   // Condición para que en la aplicación el titulo aparezca en el centro si no hay un boton seleccionado
     const contenedortitulo = {
       display: "flex", 
-      // flexDirection: "column", 
-      alignItems: "start",
-      justifyContent:"start", 
-      padding: 10 };
+      // flexDirection: "row", 
+      alignItems: "center",
+      justifyContent:"space-between", 
+      padding: "0px 12px" };
 
       // if(!mapruta){
       //   ;
       // }
   // Retorna la interfaz grafica
   return (
-    <div style={{width: "100%", backgroundColor: "#edcbb1"}}>
+    <div style={{width: "100%", backgroundColor: "#d2d0ce", borderRadius: 10}}>
       {/* Sección superior con titulo y botones */}
       {/* <div style={{textAlign:"center",}}> */}
       <div style={contenedortitulo}>
         {/* Titulo de la aplicación */}
-        <h5>Mapa</h5>
-        {/* Botón para mostrar mapa básico */}
-        <div style={{fontFamily:"sans-serif", display:"flex", gap: "10px", padding:"10px"}}>
+        <h6>Mapa</h6>
           {/* Botón para mostrar rutas */}
-          <button style={estiloboton} onClick={()=> setVista("ruta")}>
+          <button className="btn-buscar-insta" onClick={()=> setVista(true)}>
             Ruta
           </button>
-        </div>
+        {/* </div> */}
       </div>
       {/* Area donde se mostrara el componete seleccionado */}
-      <div style={{ height: "30vh", width:"95%", padding: 5}}>
+      <div style={{ height: "30vh", width:"100%", padding: 5}}>
         {vista === false && <MapaBasico />}
-        {vista === "ruta" && <Ruta onBack={inicio} estiloss={estilobotonr}/>}
+        {vista && (
+          <div style={estilocard}>
+            <div style={modal}>
+              <h6 style={{margin: 15}}>Mapa</h6>
+              <button style={cerrar} onClick={() => setVista(false)}>
+                  ✕
+                </button> 
+                <Ruta lugar={evento.lugar}/>  
+            </div>
+          </div>
+          )}
       </div>
     </div>
   );

@@ -2,7 +2,9 @@ input  {
     padding: 8px;
     border-radius: 8px;
     border: 1px solid #ccc;
-    background: #F2E2C4;
+    /* background: #F2E2C4; */
+    border: 1px solid white;
+    width: 100%;
 
 }
 
@@ -24,24 +26,23 @@ input  {
 
 form{
     width: 100%;
-    display: flex;
-    flex-direction: column;
+    /* display: flex;
+    flex-direction: column; */
     gap: 10px;
 }
 .btn-inicio{
-
-    background: #D97904;
+    background: #d91204;
     color: white;
     min-height: 30px;
     border-radius: 10px;
-    border-color: aliceblue;
+    border: none;
 }
 .btn-google {
     margin-top: 20px;
     min-height: 30px;
     color: white;
-    background: #F2C029;
-    border-color: white;
+    background: #e97020;
+    border: none;
     border-radius: 10px;
 }
 .btn{
@@ -145,3 +146,90 @@ h5 {
 .lado-derecho {
   max-width: 420px;
 }
+
+.logo-text{
+    color: white;
+    font-weight: 700;
+}
+
+.container-style{
+        background: #103e3f;
+}
+.menu{
+        color: white !important;
+        font-weight: 700;
+
+}
+.navbar {
+    position: sticky;
+    top: 0;
+    background: #103e3f;
+    padding: 15px;
+    z-index: 1000;
+
+}
+.input-nav{
+    background: #103e3f;
+    color: white;
+}
+.Bar-nav{
+    height: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+.continer-buscar{
+    position: relative;
+    width: 150px;
+}
+
+.btn-buscar{
+    width: 100%;
+    padding-right: 35PX ;
+}
+.continer-buscar i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+    cursor: pointer;
+}
+.card-insta{
+    background-color: #bb5631;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+.btn-buscar-insta{
+    background: rgb(238, 22, 22);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    margin: 10px;
+}
+.forminsta{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;    
+}
+.container-login{
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff; 
+}
+.card-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgb(0, 0, 0);
+    border-radius: 12px;
+    padding: 25px;
+    width: 350px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    /* gap: 10px; */
+}
+
+

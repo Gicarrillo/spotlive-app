@@ -22,9 +22,9 @@ export default function MapaBasico({estiloss}
                   atribution="&copy; OpenStreetMap contributors"/>
 
                   {/* Marcador + popup */}
-                    <Marker position={[20.577, -100.3592]} icon={DefaultIcon}>
+                    {/* <Marker position={[20.577, -100.3592]} icon={DefaultIcon}>
                         <Popup>Nueva ubicación</Popup>
-                    </Marker>
+                    </Marker> */}
              </MapContainer>
         </div>
     );

@@ -10,12 +10,15 @@ import "leaflet-routing-machine";
 import DefaultIcon from "./icon";
 // Importamos el icono de origen
 import IconOrigen from "./iconorigen";
+import { responsivePropType } from "react-bootstrap/esm/createUtilityClasses";
 
 // Componente encargado de dibjujar la ruta en el mapa
 function Routing({from, to}) {
+    // Agregar un estado para cambiar el destino
     const map = useMap();
     // Referenci para guardar el control de rutas
     const routingRef=useRef(null);
+
     // Sejecuta cuando cambia el mapa a los puntos
     useEffect(() => {
         // Si el mapa aun no esta listo, no hacemos nada
@@ -39,7 +42,8 @@ function Routing({from, to}) {
                 },
                     // Servicio para calcular la ruta
                     router: L.Routing.osrmv1({
-                        serviceUrl: `https://router.project-osrm.org/route/v1/`,
+                        serviceUrl: "https://router.project-osrm.org/route/v1/",
+                        profile: "driving",
                         language: "es"
                     }),
                     // Perzonalizar marcadores
@@ -62,8 +66,10 @@ function Routing({from, to}) {
     return null;
 }
 // Componente principal de la vista ruta
-export default function Ruta({onBack, estiloss}){
-    const [origen, setOrigen] = useState([null]);
+export default function Ruta({lugar}){
+    const [origen, setOrigen] = useState(null);
+    // Destino
+    const [destino, setDestino] = useState(null);
     // Para obtener la ubicación del usuario
     useEffect(() => {
         if(navigator.geolocation){
@@ -73,6 +79,37 @@ export default function Ruta({onBack, estiloss}){
             });
         }
     }, []);
+
+    // Funcion para convertir el luegar  a coordenadas
+    console.log("Lugarrecibido: ",lugar);
+    useEffect(() => {
+        if(!lugar) return;
+    const buscar = async () => {
+        try{
+            const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(lugar)}`
+        );
+            const data = await response.json();
+            console.log(data);
+
+            if(data.length >0) {
+                setDestino([
+                    parseFloat(data[0].lat),
+                    parseFloat(data[0].lon)
+                ]);
+            }
+        } catch (error) {
+            console.error("Error al obtener coordenadas", error);
+        }
+    };
+    // if(data.length > 0){
+    //     setDestino([
+    //         parseFloat(data[0].lat),
+    //         parseFloat(data[0].lon)
+    //     ]);
+    // }
+    buscar();
+ }, [lugar]);
     return (
         // Se agregar un div para poder colocar el botón de regresar
         <div style={{height: "100vh", width: "100%"}}>
@@ -83,18 +120,18 @@ export default function Ruta({onBack, estiloss}){
             <MapContainer
             center={[20.577, -100.3592]} //Coordenadas iniciales
             zoom={13} //nivel de zoom
-            style={{height: "30vh", width: "100%"}}
+            style={{height: "100%", width: "100%", margin: "10px 10px"}}
             >
                 {/* Capa base del mapa */}
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; OpenStreetMap contributors"/>
                     {/* Componenete que dibuja la ruta */}
-                    {origen && (
+                    {origen && destino && (
                         <Routing
                         // Se le asigna la ubicación actual a from
                             from={origen}
-                            to={[20.749, -99.9458]}
+                            to={destino}
                         />
                     )}:
 

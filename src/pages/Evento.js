@@ -72,8 +72,8 @@ export default function Evento() {
     return guardados ? JSON.parse(guardados) : [];
   });
 // Estado para manejar los mensajes de cargando y error
-//   const [loading, setLoading] = useState(false);
-//   const  [error, setError] = useState("");
+  const [loadinginsta, setLoadinginsta] = useState(false);
+  const  [errorinsta, setErrorinsta] = useState("");
   // Estado para controlar el mensaje de resultados
   const[result, setResult] = useState(false);
   // Estado para el mensaje de cargando con tiempo
@@ -165,7 +165,7 @@ useEffect(() => {
     if (!username) return;
 
     try {
-      setLoading(true);
+      setLoadinginsta(true);
       setError("");
       setProfile(null);
       const data = await searchInstagramProfile(username);
@@ -173,7 +173,7 @@ useEffect(() => {
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setLoadinginsta(false);
     }
   };
 
@@ -247,12 +247,45 @@ const tracksOrdenados = [...tracksFiltrados].sort((a, b) => {
     <Navbar/>
     <div className="main-container">
       <div className="lado-izquierdo">
+        <div className="filtros-resultados">
+          <select
+          onChange={(e) => {
+          // Modifica el valor de la fuente para que se cambie al que selecciono
+          setFuente(e.target.value);}}
+          className="selectionar btn-filtro"
+          aria-label="Filtar resultados" style={{ padding: 8, borderRadius: 8, width: "25%" }}> 
+            {/* Opciones que se muestra que puede seleccionar */}
+            <option value="all">Todos</option>
+            <option value="iTunes API">iTunes</option>
+            <option value="Deezer API">Deezer</option>
+            </select>
+                      
+          {/* Lista desplegable para ordenar alfabeticamente de forma normal o inversa */}
+          <select className="btn-filtro"
+          // SetOrden toma el valor con el cual se va a ordenar
+          onChange={(e) => setOrden(e.target.value)}
+          style={{ padding: 8, borderRadius: 8, width: "25%", marginTop: 5 }}>
+           {/* Opciones que tiene para ordenar los titulos */}
+            <option value="none">Sin orden</option>
+            <option value="az">Titulo A-Z</option>
+            <option value="za">Titulo Z-A</option>
+          </select>
+          <h6>Resultados {tracksFiltrados.length} (Cátalogo)</h6>
+        </div>
+
+        {/* EVENTOOOOO Y LISTASSS */}
+        <div className="evento container">
+        <TrackDetails track={selected} evento={datosevento}/>
+          <div className="card-lista">
+            <TrackList items={tracksOrdenados} onSelect={handleSelect}/>
+          </div>
+        </div>
           <div className="container">
             <div style={{padding: 16, fontFamily: "Arial"}}>
-              <h1 style={{marginTop: 0}}>
-                Mini Streaming Dashboard
-              </h1>
-              <SearchBar onSearch={runSearch} loading={loading}/>
+              {/* <h4 style={{marginTop: 0}}>
+                Detalles del Evento
+              </h4> */}
+              {/* <SearchBar onSearch={runSearch} loading={loading}/> */}
 
               <div>
                 {/* <HistoryPanel history={history} onPick={runSearch} onlimpiar={eliminarhistorial}/> */}
@@ -279,59 +312,27 @@ const tracksOrdenados = [...tracksFiltrados].sort((a, b) => {
                     </div>
                   )}
                   {/* Condicion para mostrar  mensaje sino se encuentran resultados */}
-                  {result && !loading && !error && tracks.length === 0 &&(
+                  {/* {result && !loading && !error && tracks.length === 0 &&(
                     <div className="card card-noresult" style={{padding:12, border: "1px solid #ddd", borderRadius: 10}}>
                       No se encontraron resultados
                     </div>
-                  ) }
+                  ) } */}
                   {/*Se modificaron los elementos de la conción ya que desde result
                   se pued econsultar cuando ya se realizo una busqueda y cuando no  */}
                   {!result && (
                     <div className="card" style={{padding: 12, border: "1px solid #ddd", borderRadius: 10}}>
-                      Realiza una busqueda para ver canciones
+                      No hay canciones del artista
                       </div>
                   )}
                   {tracks.length > 0 && (
                     <>
-                    <h3>Resultados {tracksFiltrados.length} (Cátalogo)</h3>
+                    
                     {/* <TrackList items={tracks} onSelect={handleSelect}/>
                     <TrackDetails track={selected}/>
                     </> */}
                     <div>
                       {/* Lista desplegable para saber que filtro aplicar */}
-                      <select
-                        onChange={(e) => {
-                          // Modifica el valor de la fuente para que se cambie al que selecciono
-                            setFuente(e.target.value);
-                        }}
-                        className="selectionar btn-filtro"
-                        aria-label="Filtar resultados" style={{ padding: 8, borderRadius: 8, width: "25%" }}> 
-                        {/* Opciones que se muestra que puede seleccionar */}
-                        <option value="all">Todos</option>
-                        <option value="iTunes API">iTunes</option>
-                        <option value="Deezer API">Deezer</option>
-                      </select>
-                      {/* Lista desplegable para filtrar por los artistas que haya en el resultado */}
-                      {/* SetArtista toma el valor seleccionado */}
-                      <select className="btn-filtro" onChange={(e) => setArtista(e.target.value)}>
-                        {/* Mapea los artistas disponibles para que aparezcan en la lista */}
-                        <option value="all">Todos los artistas</option>
-                        {artistasDisponibles.map((a) => (
-                          // a=nombre del artista
-                          <option key={a} value={a}>{a}</option>
-                        ))}
-                      </select>
-                      {/* Lista desplegable para ordenar alfabeticamente de forma normal o inversa */}
-                      <select className="btn-filtro"
-                      // SetOrden toma el valor con el cual se va a ordenar
-                        onChange={(e) => setOrden(e.target.value)}
-                        style={{ padding: 8, borderRadius: 8, width: "25%", marginTop: 5 }}
-                      >
-                        {/* Opciones que tiene para ordenar los titulos */}
-                        <option value="none">Sin orden</option>
-                        <option value="az">Titulo A-Z</option>
-                        <option value="za">Titulo Z-A</option>
-                      </select>
+
                       {/* Valida no haya tracks filtrados y muestra un mensaje que le avise al usuario */}
                       {tracksFiltrados.length === 0 &&(
                     <div className="card" style={{padding: 12, border: "1px solid #ddd", borderRadius: 10}}>
@@ -341,10 +342,11 @@ const tracksOrdenados = [...tracksFiltrados].sort((a, b) => {
                   </div>
                   {/* Muestra los resultados de las listas filtradas */}
                       <div className="card-lista">
-                        <TrackList items={tracksOrdenados} onSelect={handleSelect}/>
+
+                        {/* <TrackList items={tracksOrdenados} onSelect={handleSelect}/> */}
                         <div>
                           {/* Muestra solo el card si se ha seleccionado una canción */}
-                        {selected && (<TrackDetails track={selected} evento={datosevento}/>)}
+
                       </div>
                       </div>
                       {/* Muestra las recomendaciones */}
@@ -360,21 +362,30 @@ const tracksOrdenados = [...tracksFiltrados].sort((a, b) => {
         </div>
       </div>
       <div className="lado-derecho">
-        <div style={{ padding: 20}}>
+        <div className="card-insta" style={{ padding: 20}}>
       
           <h2>Buscar artista en Instagram</h2>
-
-          <input
+          <div className="forminsta">
+            <input
             value={username}
             onChange={e => setUsername(e.target.value)}
             placeholder="Ej: badbunnypr"
-            style={{ padding:10, marginRight:10 }}
+            style={{ padding:8, marginRight:10, borderRadius: 50 }}
           />
 
-          <button onClick={buscarPerfil}>Buscar</button>
+          <button className="btn-buscar-insta" onClick={buscarPerfil}>Buscar</button>
+          </div>
+          {/* <input
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            placeholder="Ej: badbunnypr"
+            style={{ padding:8, marginRight:10, borderRadius: 50 }}
+          />
 
-          {loading && <p>Cargando...</p>}
-          {error && <p style={{color:"red"}}>{error}</p>}
+          <button className="btn-buscar-insta" onClick={buscarPerfil}>Buscar</button> */}
+
+          {loadinginsta && <p>Cargando...</p>}
+          {errorinsta && <p style={{color:"red"}}>{errorinsta}</p>}
 
           {profile && (
             <div style={{ border:'1px solid #ccc', padding:20, marginTop:20, maxWidth:400 }}>
@@ -390,7 +401,7 @@ const tracksOrdenados = [...tracksFiltrados].sort((a, b) => {
             </div>
           )}
           </div>
-          <Mapa/>
+          <Mapa evento={datosevento}/>
       </div>
   </div>
   </>

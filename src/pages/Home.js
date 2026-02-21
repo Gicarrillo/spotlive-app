@@ -32,7 +32,9 @@ function Home() {
 
   return (
     <>
+    <div>
     <Navbar/>
+    </div>
     <div style={{ padding: 100, fontFamily: "Arial" }}>
       <h2>Eventos Disponibles</h2>
 

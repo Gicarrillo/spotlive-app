@@ -19,7 +19,7 @@ export default function TrackCard({ title, artist, album, image, source, onSelec
             // Espacio entre elemntos
             gap: 12,
             // Espacio interno
-            padding: 12,
+            padding: 5,
             // Borde gris claro
             border: "1px solid #000000",
             // Borde redondeados
@@ -28,6 +28,7 @@ export default function TrackCard({ title, artist, album, image, source, onSelec
             cursor: "pointer",
             // Alinea verticalmente los elementos
             alignItems: "center",
+            height: 100,
         }}
         >
             {/* Imagen del álbum o canción */}
@@ -44,17 +45,17 @@ export default function TrackCard({ title, artist, album, image, source, onSelec
             />
              <div>
                 {/* Información de la canción */}
-                <h4 style={{ margin: 0 }}>{title}</h4>
-                <p style={{ margin: "4px 0", fontSize: 14 }}>{artist}</p>
-                <p style={{ margin: "4px 0", fontSize: 13, color: "#fff" }}>
+                <h6 style={{ margin: 0 }}>{title}</h6>
+                <p style={{ margin: "2px 0", fontSize: 14 }}>{artist}</p>
+                <p style={{ margin: "4px 0", fontSize: 13 }}>
                 {album}
                 </p>
-                <div style={{display: "flex", flexDirection: "column"}}>
+                <div style={{display: "flex"}}>
                     {/* Boton que abre una pagina externa con window.open*/}
                     {/* StopPropagation bloquea la ejecucuón de onselect que solo abre los detalles */}
-                    <button className="btn" onClick={(e) => {e.stopPropagation(); window.open(urlcompleta, "_blank");}} >
+                    {/* <button className="btn" onClick={(e) => {e.stopPropagation(); window.open(urlcompleta, "_blank");}} >
                         Escuchar en la plataforma
-                    </button>
+                    </button> */}
                     <span style={{ fontSize: 13, color: "rgb(195, 194, 194)"}}> {source}</span>
                 </div>
             </div>

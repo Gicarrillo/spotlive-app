@@ -27,17 +27,22 @@ function Register() {
         }
     };
     return (
-        <div className="container">
-            <div className="card">
-                <h2>Registro</h2>
+        <div className="container-login">
+            <div className="card-login">
+                <p style={{color: "white", marginBottom: 10}}>SpotLive</p>
+                <h2 style={{color: "white", marginBottom: "80px"}}>Registro</h2>
+                <div style={{marginBottom: 50}}>
+                <p style={{color: "white", marginBottom: 0, textAlign: "center", fontSize: 10}}>Ingresa y descubre los</p>
+                <p style={{color: "white", marginBottom: 10, textAlign: "center", fontSize: 10}}>mejores eventos</p>
+                </div>
                 <form onSubmit={handleRegister}>
-                    <h5>Nombre</h5>
+                    <h6 style={{color: "white", marginBottom: 10}}>Nombre</h6>
                     <input type="text" placeholder="Nombre" onChange={(e) => setUser(e.target.value)} required />
-                    <h5>Correo Electronico</h5>
+                    <h6 style={{color: "white", marginBottom: "10px", marginTop: 10}}>Correo Electronico</h6>
                     <input type="email" placeholder="Correo" onChange={(e) => setEmail(e.target.value)} required />
-                    <h5>Contraseña</h5>
+                    <h6 style={{color: "white", marginBottom: "10px", marginTop: 10}}>Contraseña</h6>
                     <input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} required />
-                    <button className="btn btn-inicio" type="submit">Registrarse</button>
+                    <button style={{width: "100%", marginTop: 30}} className="btn-inicio" type="submit">Registrarse</button>
                 </form>
             </div>
         </div>

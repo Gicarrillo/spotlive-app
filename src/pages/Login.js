@@ -65,20 +65,27 @@ function Login() {
         }
     };
     return (
-        <div className="container">
-        <div className="card" style={{background: "#935a45"}}>
-            <h2 style={{color: "white"}}>Iniciar Sesión</h2>
-            <form onSubmit={handleLogin}>
+        <div className="container-login">
+        <div className="card-login" style={{background: "#000000"}}>
+            <p style={{color: "white", marginBottom: 10}}>SpotLive</p>
+            <h2 style={{color: "white", marginBottom: "80px"}}>Iniciar Sesión</h2>
+            <div style={{marginBottom: 50}}>
+            <p style={{color: "white", marginBottom: 0, textAlign: "center", fontSize: 10}}>Ingresa y descubre los</p>
+            <p style={{color: "white", marginBottom: 10, textAlign: "center", fontSize: 10}}>mejores eventos</p>
+            </div>
+            <form className="form-login" onSubmit={handleLogin}>
+                <h6 style={{color: "white"}}>Correo Electronico</h6>
                 <input type="email" placeholder="correo" onChange={(e) => setEmail(e.target.value)} required />
+                <h6 style={{color: "white", marginBottom: "10px", marginTop: 10}}>Contraseña</h6>
                 <input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} required />
                 <div style={{display: "flex", justifyContent: "center"}}>
-                <button className="btn-inicio" type="submit">
+                <button style={{marginTop: 20, width: "100%"}} className="btn-inicio" type="submit">
                     Ingresar
                 </button>
                 </div>
             </form>
             {/* Boton para ingresar con cuenta de google */}
-            <button className="btn-google" onClick={handleGoogleLogin}>
+            <button style={{width: "100%"}} className="btn-google" onClick={handleGoogleLogin}>
                 Inicar sesión con Google
             </button>
         </div>
