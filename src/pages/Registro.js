@@ -1,7 +1,7 @@
 // src/pages/Register.js
 import { useState } from "react";
 import { auth, db } from "../firebaseConfig";
-import {createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {createUserWithEmailAndPassword, updateProfile,signOut } from "firebase/auth";
 import {doc, setDoc} from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
@@ -20,8 +20,10 @@ function Register() {
             displayName: user
             });
 
-             await setDoc(doc(db, "users", userCredential.user.uid), {user:user, email: email, isActive: false});
-        navigate("/login");
+            await setDoc(doc(db, "users", userCredential.user.uid), {user:user, email: email, isActive: false});
+            await signOut(auth);//para cerrar la sesión qie activa firebase de manera automática
+            alert("¡Registro exitoso! Por favor, inicia sesión para acceder");
+            navigate("/login");
         } catch (error) {
             console.error("Error en el registro", error.message);
         }
@@ -32,8 +34,8 @@ function Register() {
                 <p style={{color: "white", marginBottom: 10}}>SpotLive</p>
                 <h2 style={{color: "white", marginBottom: "80px"}}>Registro</h2>
                 <div style={{marginBottom: 50}}>
-                <p style={{color: "white", marginBottom: 0, textAlign: "center", fontSize: 10}}>Ingresa y descubre los</p>
-                <p style={{color: "white", marginBottom: 10, textAlign: "center", fontSize: 10}}>mejores eventos</p>
+                <p style={{color: "white", marginBottom: 0, textAlign: "center", fontSize: 12}}>Registrate para conocer</p>
+                <p style={{color: "white", marginBottom: 10, textAlign: "center", fontSize: 12}}>los mejores eventos</p>
                 </div>
                 <form onSubmit={handleRegister}>
                     <h6 style={{color: "white", marginBottom: 10}}>Nombre</h6>

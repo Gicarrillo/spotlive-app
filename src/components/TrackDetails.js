@@ -33,10 +33,11 @@ export default function TrackDetails({track, evento}){
                 <>
                 <h3>Información del Evento</h3>
                 <p><strong>Descripción:</strong> {evento.descripcion}</p>
-                <p><strong>Artista:</strong> {evento.artista}</p>
+                <p><strong>Artista:</strong> {evento.autor}</p>
                 <p><strong>Lugar:</strong> {evento.lugar}</p>
                 <p><strong>Fecha:</strong> {" "}
   {evento.fecha?.toDate().toLocaleDateString()}</p>
+                <p><strong>Costo:</strong> {evento.costo}</p>
                 <hr />
                 </>
             )}

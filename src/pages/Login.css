@@ -5,7 +5,6 @@ input  {
     /* background: #F2E2C4; */
     border: 1px solid white;
     width: 100%;
-
 }
 
 .container {
@@ -117,6 +116,7 @@ h5 {
   gap: 40px;
   padding: 100px;
   align-items: flex-start; /* importante */
+  background-color: #f7fff2;
 }
 
 .lado-izquierdo {
@@ -171,6 +171,8 @@ h5 {
 .input-nav{
     background: #103e3f;
     color: white;
+    width: 275px;
+    margin-left: 10px;
 }
 .Bar-nav{
     height: 10px;
@@ -184,8 +186,13 @@ h5 {
 }
 
 .btn-buscar{
-    width: 100%;
-    padding-right: 35PX ;
+    width: 15%;
+    /* padding-right: 35PX ; */
+    background: rgb(197,52, 57);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    margin: 10px;
 }
 .continer-buscar i {
     position: absolute;
@@ -201,11 +208,12 @@ h5 {
     border-radius: 10px;
 }
 .btn-buscar-insta{
-    background: rgb(238, 22, 22);
+    background: rgb(61, 26, 18);
     border: none;
     border-radius: 10px;
     color: white;
     margin: 10px;
+    padding: 6px;
 }
 .forminsta{
     display: flex;
@@ -227,9 +235,16 @@ h5 {
     border-radius: 12px;
     padding: 25px;
     width: 350px;
-    margin-bottom: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     /* gap: 10px; */
 }
-
-
+.btn-buscar-bar{
+    width: 15%;
+    background: none;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    /* margin-right: 10px; */
+}

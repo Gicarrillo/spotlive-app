@@ -1,7 +1,7 @@
 // Importamos todos los elementos y archivos a utilizar
 
 import { useParams } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, query, where} from "firebase/firestore";
 import React, {useState, useEffect} from "react";
 import SearchBar from "../components/SearchBar";
 import TrackList from "../components/TrackList";
@@ -18,7 +18,7 @@ import { searchItunes } from "../services/iTunesApi";
 import { searchDeezer } from "../services/deezerApi";
 import Mapa from "../components/mapa";
 import { field } from "firebase/firestore/pipelines";
-import Navbar from "./Navbar";
+import NavbarEvento from "./NavbarEvento";
 // Importamos estilos
 // import "./App.css"
 // Recibimos lo que devuelve la API de iTunes
@@ -58,6 +58,7 @@ export default function Evento() {
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [eventoBuscar,setEventoBuscar] = useState("");//para el evento que se busca
 
   const [tracks, setTracks] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -82,7 +83,7 @@ export default function Evento() {
 // Filtrar para ordenar alfabeticamente
   const[orden, setOrden] = useState("none");
   // Filtrar por fuente
-  const[fuente, setFuente] = useState("all");
+  // const[fuente, setFuente] = useState("all");
   // Para ordenar segun el artista
   const[artista, setArtista] = useState("all");
 
@@ -106,8 +107,8 @@ useEffect(() => {
 
         setDatoseventos(data);
 
-        if(data.artista) {
-          runSearch(data.artista);
+        if(data.autor) {
+          runSearch(data.autor);
         }
       }
     } catch (error) {
@@ -211,15 +212,15 @@ useEffect(() => {
   // Crea la lista de los resultados filtrados que se visualizará
   const tracksFiltrados = tracks.filter((t) => {
     // Crea una lista de los que son filtrados considerando su fuente
-  const coincideFuente =
+  // const coincideFuente =
   // Si fuente es todos o source igual a la fuente seleccionada
-    fuente === "all" || t.source === fuente;
+    // fuente === "all" || t.source === fuente;
   // Si la opción es todos muestra sin importar el artista
   // Se la opción es artista muestra solo las que coincidan con el artista
   const coincideArtista =
     artista === "all" || t.artist === artista;
   //La canción debe cumplir con ambas condiciones para mostrarse
-  return coincideFuente && coincideArtista;
+  return /*coincideFuente &&*/ coincideArtista;
 });
 // Crea la lista de los artistas que aparecen al consultar los datos
 const artistasDisponibles = [
@@ -239,26 +240,42 @@ const tracksOrdenados = [...tracksFiltrados].sort((a, b) => {
 // Es para que no se modifiquen los elementos
   return 0;
 });
-
-
+useEffect(()=>{
+  if(eventoBuscar){
+    const busqueda = async()=>{
+    const qry = query(collection(db,"eventos"), where("artista","==",eventoBuscar.trim()));//se usa where para hacer una consulta específica denteo de la bd, en este caso con el campo de artista
+    const qSnapshot = await getDocs(qry);
+    if(!qSnapshot.empty){
+      const docSnap = qSnapshot.docs[0];//obtener el primer resultado
+      const data = docSnap.data();
+      setDatoseventos({id:docSnap.id,...data});
+      if(data.artista) runSearch(data.artista);
+    }else{
+      // 
+      setLoading(false)
+    }
+  };
+  busqueda();
+  }
+},[eventoBuscar]);
 
   return(
     <>
-    <Navbar/>
+    <NavbarEvento/>
     <div className="main-container">
       <div className="lado-izquierdo">
         <div className="filtros-resultados">
-          <select
-          onChange={(e) => {
-          // Modifica el valor de la fuente para que se cambie al que selecciono
-          setFuente(e.target.value);}}
-          className="selectionar btn-filtro"
-          aria-label="Filtar resultados" style={{ padding: 8, borderRadius: 8, width: "25%" }}> 
+          {/* <select */}
+          {/* onChange={(e) => { */}
+          {/* // Modifica el valor de la fuente para que se cambie al que selecciono */}
+          {/* setFuente(e.target.value);}} */}
+          {/* className="selectionar btn-filtro" */}
+          {/* aria-label="Filtar resultados" style={{ padding: 8, borderRadius: 8, width: "25%" }}>  */}
             {/* Opciones que se muestra que puede seleccionar */}
-            <option value="all">Todos</option>
-            <option value="iTunes API">iTunes</option>
-            <option value="Deezer API">Deezer</option>
-            </select>
+            {/* <option value="all">Todos</option> */}
+            {/* <option value="iTunes API">iTunes</option> */}
+            {/* <option value="Deezer API">Deezer</option> */}
+            {/* </select>*/}
                       
           {/* Lista desplegable para ordenar alfabeticamente de forma normal o inversa */}
           <select className="btn-filtro"
@@ -270,7 +287,7 @@ const tracksOrdenados = [...tracksFiltrados].sort((a, b) => {
             <option value="az">Titulo A-Z</option>
             <option value="za">Titulo Z-A</option>
           </select>
-          <h6>Resultados {tracksFiltrados.length} (Cátalogo)</h6>
+          <h6>Resultados {tracksFiltrados.length} (Canciones)</h6>
         </div>
 
         {/* EVENTOOOOO Y LISTASSS */}
@@ -286,7 +303,6 @@ const tracksOrdenados = [...tracksFiltrados].sort((a, b) => {
                 Detalles del Evento
               </h4> */}
               {/* <SearchBar onSearch={runSearch} loading={loading}/> */}
-
               <div>
                 {/* <HistoryPanel history={history} onPick={runSearch} onlimpiar={eliminarhistorial}/> */}
                 <div>
@@ -307,7 +323,7 @@ const tracksOrdenados = [...tracksFiltrados].sort((a, b) => {
                   )}
                   {/* Si error es verdadero muestra mensaje de error */}
                   {error &&(
-                    <div style={{padding: 12, border: "1px solid #ffb3b3", borderRadius: 10, background: "#f4c5"}}>
+                    <div style={{padding: 1, border: "1px solid #ffb3b3", borderRadius: 10, background: "#f4c5"}}>
                       <b>Error: </b> {error}
                     </div>
                   )}

@@ -8,7 +8,10 @@ import app from "../firebaseConfig";
 
 function Home() {
   const navigate = useNavigate();
+  const [eventoBuscar,setEventoBuscar]=useState("");
   const [eventos, setEventos] = useState([]);
+  // const [tipoEvento,setTipoEvento] = useState([]);
+  const [evento, setEvento] = useState("all");
   const db = getFirestore(app);
 
   // Cargar eventos de firestore
@@ -28,16 +31,43 @@ function Home() {
     }
     obtenerEventos();
   }, [db]);
-
+  // const filtrados = eventos.filter(ev =>{
+  //   if (!eventoBuscar) return true;
+  //   const nombreEvento = ev.autor.toLowerCase() || "";
+  //   const busqueda = eventoBuscar.toLowerCase();
+  //   return nombreEvento.includes(busqueda);
+  // }
+  // );
+  // const eventoFiltrados = eventos.filter((eve) => {
+  //   const coincideEvento =
+  //     evento === "all" || eve.tipoEvento === evento;
+  //   return coincideEvento;
+  // });
+  const eventosMostrar = eventos.filter((eve) => {
+    const busqueda= eve.autor.toLowerCase().includes(eventoBuscar.toLowerCase()) || eve.descripcion?.toLowerCase().includes(eventoBuscar.toLowerCase());//para la busqueda de evento por autor
+    const eventoTipo = evento === "all"|| eve.tipoEvento === evento;//para filtro de eventos segun su tipo
+    return busqueda && eventoTipo;
+  })
 
   return (
     <>
     <div>
-    <Navbar/>
+    <Navbar onSearch={(eve) => setEventoBuscar(eve)}/>
     </div>
     <div style={{ padding: 100, fontFamily: "Arial" }}>
       <h2>Eventos Disponibles</h2>
-
+      <select className="btn-filtro"
+          // SetOrden toma el valor con el cual se va a ordenar
+          onChange={(e) => setEvento(e.target.value)}
+          style={{ padding: 8, borderRadius: 8, width: "25%", marginTop: 5 }}>
+           {/* Opciones que tiene para ordenar los titulos */}
+            <option value="all">Todos los eventos</option>
+            <option value="concierto">Conciertos</option>
+            <option value="obra">Obras de Teatro</option>
+            <option value="conferencia">Conferencias</option>
+            <option value="exposicion">Exposiciones</option>
+          </select>
+          <h6 style={{marginTop:"20px"}}>Resultados {eventosMostrar.length} (Eventos)</h6>
       <div
         style={{
           display: "grid",
@@ -46,7 +76,7 @@ function Home() {
           marginTop: 20
         }}
       >
-        {eventos.map((evento) => (
+        {eventosMostrar.map((evento) => (
           <div 
             key={evento.id}
             onClick={() => navigate(`/evento/${evento.id}`)}
@@ -75,6 +105,8 @@ function Home() {
           </div>
         ))}
       </div>
+      {eventosMostrar.length === 0 && (
+        <div className="alert alert-info">No hay eventos para dicha categoría o búsqueda</div> )}
     </div>
     </>
   );

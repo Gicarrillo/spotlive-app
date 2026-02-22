@@ -4,16 +4,13 @@ import "./Login.css";
 import {auth, db, googleProvider} from "../firebaseConfig";
 import { signInWithEmailAndPassword, signOut, signInWithPopup} from "firebase/auth";
 import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-
-    // return () => unsubscribe();
-    //     }, [navigate]);
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
@@ -32,11 +29,15 @@ function Login() {
             }
             // const userCredential = await signInWithEmailAndPassword(auth, email, password);
             // await updateDoc(doc(db, "users", userCredential.user.uid), {isActive:true});
+            
             await updateDoc(userDocRef, {isActive:true});
             
-            navigate("/");
+            navigate("/home");
         } catch (error){
-            console.error("Error añ iniciar sesión: ", error.message);
+            if (error.code === "auth/user-not-found" || error.code === "auth/invalid-credential") {
+                alert("Cuenta no existente o datos incorrectos, regístrate o verifica tus credenciales.");
+            }
+            console.error("Error al iniciar sesión: ", error.message);
         }
     };
 
@@ -49,6 +50,7 @@ function Login() {
             const userDoc = await getDoc(userDocRef);
 
             if (userDoc.exists() && userDoc.data().isActive){
+                await signOut(auth);
                 alert ("Ya hay una sesión activa en otro dispositivo");
                 return;
             }
@@ -70,8 +72,8 @@ function Login() {
             <p style={{color: "white", marginBottom: 10}}>SpotLive</p>
             <h2 style={{color: "white", marginBottom: "80px"}}>Iniciar Sesión</h2>
             <div style={{marginBottom: 50}}>
-            <p style={{color: "white", marginBottom: 0, textAlign: "center", fontSize: 10}}>Ingresa y descubre los</p>
-            <p style={{color: "white", marginBottom: 10, textAlign: "center", fontSize: 10}}>mejores eventos</p>
+            <p style={{color: "white", marginBottom: 0, textAlign: "center", fontSize: 12}}>Ingresa y descubre los</p>
+            <p style={{color: "white", marginBottom: 10, textAlign: "center", fontSize: 12}}>mejores eventos</p>
             </div>
             <form className="form-login" onSubmit={handleLogin}>
                 <h6 style={{color: "white"}}>Correo Electronico</h6>
@@ -88,6 +90,14 @@ function Login() {
             <button style={{width: "100%"}} className="btn-google" onClick={handleGoogleLogin}>
                 Inicar sesión con Google
             </button>
+            <div style={{ marginTop: 20, textAlign: "center" }}>{/*para cpoder realizar un registro si no se tiene cuenta*/}
+                <p style={{ color: "white", fontSize: 12 }}>
+                    ¿No tienes una cuenta?{" "}
+                    <Link to="/registro" style={{ color: "#ba290c", fontWeight: "bold", textDecoration: "none" }}>
+                    Regístrate aquí
+                    </Link>
+                </p>
+            </div>
         </div>
         </div>
     );

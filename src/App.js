@@ -67,6 +67,7 @@ import Registro from "./pages/Registro";
 import Home from "./pages/Home";
 import Evento from "./pages/Evento"
 import Mapa from "./components/mapa";
+import InicioApp from "./pages/InicioApp"
 // // Importar dashboard
 // import Dashboard from './pages/Dashboard'; 
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -76,6 +77,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<InicioApp/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/registro" element={<Registro/>}/>
           <Route path="/home" element={<ProtectedRoute><Home/></ProtectedRoute>}/>
@@ -88,4 +90,3 @@ function App() {
   );
 }
 export default App;
-

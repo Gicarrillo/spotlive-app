@@ -81,7 +81,7 @@ export default function Ruta({lugar}){
     }, []);
 
     // Funcion para convertir el luegar  a coordenadas
-    console.log("Lugarrecibido: ",lugar);
+    console.log("Lugar recibido: ",lugar);
     useEffect(() => {
         if(!lugar) return;
     const buscar = async () => {

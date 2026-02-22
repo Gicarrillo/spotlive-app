@@ -1,0 +1,49 @@
+.inicio-container{
+    background: rgb(1, 27, 3);
+    color: whitesmoke;
+    display: flex;
+    flex-direction: column; /* Alinea los elementos uno arriba de otro */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 100vh; /* Ocupa todo el alto de la pantalla */
+    width: 100vw;      /* Ocupa todo el ancho */
+    margin: 0;         /* Quitamos el margin de 200px para que no se desfase */
+    position: fixed;   /* Asegura que cubra todo el fondo */
+    top: 0;
+    left: 0;
+}
+.btn-start{
+    background-color: red;
+    color: white;
+    border-radius: 20px;
+    margin: 10px;
+    width: 200px;
+    height: 50px;
+    border-color: rgb(158, 38, 38);
+}
+.btn-start:hover{
+    background-color: brown;
+}
+.registro-link span{
+    color: rgb(175, 25, 25);
+    font-weight: bold;
+    /* margin-top: 100px; */
+}
+.registro-link{
+    margin-top: 20px;
+}
+.inicio-logo{
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    margin-bottom: 30px;
+    font-size: 60px;
+}
+.inicio-slogan{
+    font-style: italic;
+}
+.img-inicio{
+    width: 150px;
+    border-radius: 80px;
+    margin-bottom: 15px;
+}

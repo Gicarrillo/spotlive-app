@@ -3,7 +3,7 @@ import {MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
 // Importamos el icono personalizado que definimos en icon.js
 import DefaultIcon from "./icon";
 // Definimos y exportamos el componente MapaBasico
-export default function MapaBasico({estiloss} 
+export default function MapaBasico({posicion,lugar} 
 
 ) {
     // Retornamos el contenido visual del componente
@@ -12,7 +12,7 @@ export default function MapaBasico({estiloss}
             <MapContainer
             //  center={[20.5888, -100.3899]}
             // Nuevas coordenadas iniciales
-             center={[20.577, -100.3592]}
+             center={posicion}
              zoom={13}
              style={{height: "100%", width: "100%"}}
              >
@@ -22,9 +22,9 @@ export default function MapaBasico({estiloss}
                   atribution="&copy; OpenStreetMap contributors"/>
 
                   {/* Marcador + popup */}
-                    {/* <Marker position={[20.577, -100.3592]} icon={DefaultIcon}>
-                        <Popup>Nueva ubicación</Popup>
-                    </Marker> */}
+                    <Marker position={posicion} icon={DefaultIcon}>
+                        <Popup>{lugar}</Popup>
+                    </Marker>
              </MapContainer>
         </div>
     );

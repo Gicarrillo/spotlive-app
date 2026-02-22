@@ -6,7 +6,14 @@ export default function SearchBar({onSearch, loading}) {
     // Se declara un estado llamado "term" para guardar el texto que escribe el usuario
     // setTerm es la función que actualiza el valor de term
     const [term, setTerm] = useState("");
-
+    //para revisar si el input esta vcio,si lo esta muestra todos los resultados
+    const handleChange = (e)=>{
+        const busq = e.target.value;
+        setTerm(busq);
+        if(busq.trim()===""){
+            onSearch("");
+        }
+    };
     // Función que se ejecuta cuando el usuario envia el formulario (al dar clic)
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -24,25 +31,24 @@ export default function SearchBar({onSearch, loading}) {
         // Formulario: al enviarlo, se ejcuta handleSubmit
         <>
         <div className="Bar-Nav">
-        <form onSubmit={handleSubmit} style={{display: "flex", gap: 8, marginBottom: 8}}>
+        <form onSubmit={handleSubmit} style={{display: "flex", gap: 8, margin: 0}}>
             {/* Campo de texto controlado: su valor depende del estado "term" */}
-            <div className="container-buscar">
+            <div className="container-buscar" style={{display:"flex", alignItems:"center",gap:"5px"}}>
                 <input className="input-nav"
                 // Valor visible del input es el estado term
                 value={term}
                 // Cada vez que el usuario escribe, se actualiza el estado con lo que hay en el input
-                onChange={(e) => setTerm(e.target.value)}
+                onChange={handleChange}
                 // Texto guía que aparece cuando el input está vacío
-                placeholder="Busca artista o canción (ej. Shakira, Coldplay)"
+                placeholder="Busca evento por nombre o artista"
                 // Estilos básicos en línea: ocupa todo el espacio disponible y agrega relleno
                 style={{flex: 1, padding:5, borderRadius: 20}}
                 />
                 {/* Botóm de buscar del formulario */}
-                <i className="btn-buscar" type="submit" style={{padding: "5px 7px"}}
-                    disabled={loading || !term.trim()}>
+                <button className="btn-buscar-bar" type="submit" disabled={loading || !term.trim()}>
                     {/* Texto del botón */}
                     🔍︎
-                </i>
+                </button>
             </div>
         </form>
         </div>
