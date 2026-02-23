@@ -5,16 +5,12 @@ import React, {useState, useEffect} from "react";
 import TrackList from "../components/TrackList";
 import TrackDetails from "../components/TrackDetails";
 import { searchInstagramProfile } from '../services/instagramApi';
-
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import app from "../firebaseConfig"
-
 import { searchItunes } from "../services/iTunesApi";
 import { searchDeezer } from "../services/deezerApi";
 import Mapa from "../components/mapa";
 import NavbarEvento from "./NavbarEvento";
-// Importamos estilos
-// import "./App.css"
 // Recibimos lo que devuelve la API de iTunes
 function normalizeItunesTrack(t) {
   return{
@@ -215,7 +211,8 @@ const tracksOrdenados = [...tracksFiltrados].sort((a, b) => {
 useEffect(()=>{
   if(eventoBuscar){
     const busqueda = async()=>{
-    const qry = query(collection(db,"eventos"), where("artista","==",eventoBuscar.trim()));//se usa where para hacer una consulta específica denteo de la bd, en este caso con el campo de artista
+    //se usa where para hacer una consulta específica denteo de la bd, en este caso con el campo de artista
+    const qry = query(collection(db,"eventos"), where("artista","==",eventoBuscar.trim()));
     const qSnapshot = await getDocs(qry);
     if(!qSnapshot.empty){
       const docSnap = qSnapshot.docs[0];//obtener el primer resultado

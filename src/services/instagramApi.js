@@ -1,8 +1,8 @@
 
 const ACCESS_TOKEN = "EAAX0gkuDJZAcBQjdzqIVHmhcOzuPgHCyDEqN3boHI57ZCEVObzInOZAjJFB3mWmCkqwGRlETdOHcs3ZBNeea00U0ghpa2kE9YQZAsaH0Btzjyi1fsxMUZB8KwyiXYHcZBV0thr9xi4OxJYDYeTgbT1WkcBwRaDzWn5EqY6FP4dXwHLIEieP4ZCgrtEfnoNeI6XvO";
-const BASE_URL = "https://graph.facebook.com";
+const BASE_URL = "https://graph.facebook.com"; //TOKEN PARA ACCEDER, VALIDO POR 60 DÍAS
 // const MY_IG_ID = "951644464705650";
-const MY_IG_ID ="17841480566976310";
+const MY_IG_ID ="17841480566976310";//clave de intagram de la página creada
 
 export const searchInstagramProfile = async (username) => {
   const fields = `business_discovery.username(${username}){id,username,name,biography,followers_count,follows_count,profile_picture_url}`;
