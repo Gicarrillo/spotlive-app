@@ -1,23 +1,17 @@
 // Importamos todos los elementos y archivos a utilizar
-
 import { useParams } from "react-router-dom";
 import { doc, getDoc, query, where} from "firebase/firestore";
 import React, {useState, useEffect} from "react";
-import SearchBar from "../components/SearchBar";
 import TrackList from "../components/TrackList";
 import TrackDetails from "../components/TrackDetails";
 import { searchInstagramProfile } from '../services/instagramApi';
 
-
-// import RecomendationsList from "./components/RecommendationsList";
-// import HistoryPanel from "./components/HistoryPanel";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import app from "../firebaseConfig"
 
 import { searchItunes } from "../services/iTunesApi";
 import { searchDeezer } from "../services/deezerApi";
 import Mapa from "../components/mapa";
-import { field } from "firebase/firestore/pipelines";
 import NavbarEvento from "./NavbarEvento";
 // Importamos estilos
 // import "./App.css"
@@ -82,20 +76,9 @@ export default function Evento() {
 
 // Filtrar para ordenar alfabeticamente
   const[orden, setOrden] = useState("none");
-  // Filtrar por fuente
-  // const[fuente, setFuente] = useState("all");
   // Para ordenar segun el artista
   const[artista, setArtista] = useState("all");
 
-  // const db =getFirestore(app);
-  // Para guardar el historial
-  // Cada que cambie history se guarda uno nuevo
-//   useEffect(() => {
-//     // Se gaurdan los datos con la clave history
-//     // JSON.stringfy convierte el arreglo de la canción en texto
-//     localStorage.setItem("history", JSON.stringify(history));
-    // [history] para determinar que se ejecuta cuando cambia history
-//   }, [history]);
 useEffect(() => {
   async function obtenerEvento() {
     try{
@@ -199,22 +182,11 @@ useEffect(() => {
       setLoading(false);
     }
   }
-  // Funicón para eliminar historial
-//   function eliminarhistorial() {
-//     // Vaciamos el arreglo
-//     setHistory([]);
-//     // Borramos del navegador los datos que tengamos con la clave de history
-//     localStorage.removeItem("history") 
-//   }
   // Agregue para ver el total de canciones
   // console.log(tracks.length)
   // Filtros que se aplican
   // Crea la lista de los resultados filtrados que se visualizará
   const tracksFiltrados = tracks.filter((t) => {
-    // Crea una lista de los que son filtrados considerando su fuente
-  // const coincideFuente =
-  // Si fuente es todos o source igual a la fuente seleccionada
-    // fuente === "all" || t.source === fuente;
   // Si la opción es todos muestra sin importar el artista
   // Se la opción es artista muestra solo las que coincidan con el artista
   const coincideArtista =
@@ -265,18 +237,6 @@ useEffect(()=>{
     <div className="main-container">
       <div className="lado-izquierdo">
         <div className="filtros-resultados">
-          {/* <select */}
-          {/* onChange={(e) => { */}
-          {/* // Modifica el valor de la fuente para que se cambie al que selecciono */}
-          {/* setFuente(e.target.value);}} */}
-          {/* className="selectionar btn-filtro" */}
-          {/* aria-label="Filtar resultados" style={{ padding: 8, borderRadius: 8, width: "25%" }}>  */}
-            {/* Opciones que se muestra que puede seleccionar */}
-            {/* <option value="all">Todos</option> */}
-            {/* <option value="iTunes API">iTunes</option> */}
-            {/* <option value="Deezer API">Deezer</option> */}
-            {/* </select>*/}
-                      
           {/* Lista desplegable para ordenar alfabeticamente de forma normal o inversa */}
           <select className="btn-filtro"
           // SetOrden toma el valor con el cual se va a ordenar
@@ -299,12 +259,7 @@ useEffect(()=>{
         </div>
           <div className="container">
             <div style={{padding: 16, fontFamily: "Arial"}}>
-              {/* <h4 style={{marginTop: 0}}>
-                Detalles del Evento
-              </h4> */}
-              {/* <SearchBar onSearch={runSearch} loading={loading}/> */}
               <div>
-                {/* <HistoryPanel history={history} onPick={runSearch} onlimpiar={eliminarhistorial}/> */}
                 <div>
                   {/* Si loaging es true muestra el mensaje de cargando */}
                   {loading && (
@@ -328,11 +283,11 @@ useEffect(()=>{
                     </div>
                   )}
                   {/* Condicion para mostrar  mensaje sino se encuentran resultados */}
-                  {/* {result && !loading && !error && tracks.length === 0 &&(
+                  {result && !loading && !error && tracks.length === 0 &&(
                     <div className="card card-noresult" style={{padding:12, border: "1px solid #ddd", borderRadius: 10}}>
                       No se encontraron resultados
                     </div>
-                  ) } */}
+                  ) }
                   {/*Se modificaron los elementos de la conción ya que desde result
                   se pued econsultar cuando ya se realizo una busqueda y cuando no  */}
                   {!result && (
@@ -340,38 +295,6 @@ useEffect(()=>{
                       No hay canciones del artista
                       </div>
                   )}
-                  {tracks.length > 0 && (
-                    <>
-                    
-                    {/* <TrackList items={tracks} onSelect={handleSelect}/>
-                    <TrackDetails track={selected}/>
-                    </> */}
-                    <div>
-                      {/* Lista desplegable para saber que filtro aplicar */}
-
-                      {/* Valida no haya tracks filtrados y muestra un mensaje que le avise al usuario */}
-                      {tracksFiltrados.length === 0 &&(
-                    <div className="card" style={{padding: 12, border: "1px solid #ddd", borderRadius: 10}}>
-                      No se obtuvieron resultados
-                    </div>
-                  )}
-                  </div>
-                  {/* Muestra los resultados de las listas filtradas */}
-                      <div className="card-lista">
-
-                        {/* <TrackList items={tracksOrdenados} onSelect={handleSelect}/> */}
-                        <div>
-                          {/* Muestra solo el card si se ha seleccionado una canción */}
-
-                      </div>
-                      </div>
-                      {/* Muestra las recomendaciones */}
-                      <div className="card-lista" style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 16 }}>
-                        {/* <RecomendationsList items={recs} onSelect={handleSelect}/>                   */}
-                      </div>
-                    </>
-                )}
-                  {/* <RecomendationsList items={recs} onSelect={handleSelect}/> */}
                 </div>
               </div>
             </div>
@@ -391,15 +314,6 @@ useEffect(()=>{
 
           <button className="btn-buscar-insta" onClick={buscarPerfil}>Buscar</button>
           </div>
-          {/* <input
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            placeholder="Ej: badbunnypr"
-            style={{ padding:8, marginRight:10, borderRadius: 50 }}
-          />
-
-          <button className="btn-buscar-insta" onClick={buscarPerfil}>Buscar</button> */}
-
           {loadinginsta && <p>Cargando...</p>}
           {errorinsta && <p style={{color:"red"}}>{errorinsta}</p>}
 
