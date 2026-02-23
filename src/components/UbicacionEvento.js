@@ -102,21 +102,11 @@ export default function Ruta({lugar}){
             console.error("Error al obtener coordenadas", error);
         }
     };
-    // if(data.length > 0){
-    //     setDestino([
-    //         parseFloat(data[0].lat),
-    //         parseFloat(data[0].lon)
-    //     ]);
-    // }
     buscar();
  }, [lugar]);
     return (
         // Se agregar un div para poder colocar el botón de regresar
         <div style={{height: "100vh", width: "100%"}}>
-            {/* Se crea el botón de regresar */}
-            {/* <button onClick={onBack} style={{...estiloss, position: "absolute", zIndex:1000}}>
-                Regresar a inicio
-            </button> */}
             <MapContainer
             center={[20.577, -100.3592]} //Coordenadas iniciales
             zoom={13} //nivel de zoom

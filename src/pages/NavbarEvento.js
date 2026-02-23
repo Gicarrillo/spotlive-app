@@ -4,8 +4,6 @@ import { useState,useEffect } from "react";
 import { getAuth, onAuthStateChanged,signOut } from "firebase/auth";
 import { getFirestore,doc,updateDoc } from "firebase/firestore";
 import app from "../firebaseConfig";
-// import Evento from "./Evento";
-
 export default function Navbar(){
   const [usuario, setUsuario] = useState(null);
   const auth = getAuth(app);
@@ -40,11 +38,9 @@ export default function Navbar(){
     <nav className="navbar navbar-expand-lg fixed-top">
       <div className=" container container-style" style={{padding:"10px"}}>
       <div className="d-flex align-items-center mx-3 mx-lg-4">
-        {/* <Link to="/" className="logo"> */}
         <Link to="/home">
           <span className="logo-text">SpotLive</span>
         </Link>
-        {/* </Link> */}
       </div>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#movileNav">
           <span style={{fontSize:"1.5rem", color:"white"}}>&#9776;</span>
@@ -57,12 +53,6 @@ export default function Navbar(){
             <li>
               <button onClick={handleOut} className="btn btn-sm btn-danger" style={{borderRadius:"8px", padding:"0px 10px"}}>Salir</button>
             </li>
-            {/* <li className="nav-item">
-              <Link className="nav-link" to="/">Contactanos</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/">Blog</Link>
-            </li> */}
           </ul>
         </div>
       </div>
