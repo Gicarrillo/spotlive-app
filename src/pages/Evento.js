@@ -313,7 +313,7 @@ useEffect(()=>{
           </div>
           {loadinginsta && <p>Cargando...</p>}
           {errorinsta && <p style={{color:"red"}}>{errorinsta}</p>}
-
+          {!loadinginsta&&!profile&&(<p>No se encontraron resultados</p>)}
           {profile && (
             <div style={{ border:'1px solid #ccc', padding:20, marginTop:20, maxWidth:400 }}>
               <img src={profile.profile_picture_url} width={80} style={{borderRadius:"50%"}} />
