@@ -61,7 +61,7 @@ function Login() {
                 await updateDoc(userDocRef, {isActive: true});
             }
 
-            navigate("/");
+            navigate("/home");
         } catch (error) {
             console.error("Error al iniciar sesión con google: ", error.message);
         }
